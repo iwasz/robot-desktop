@@ -1,0 +1,2 @@
+===Robot/Desktop===
+Bluetooth LE desktop application for communication with the robot https://hackaday.io/project/11508-micro-robot-wars
