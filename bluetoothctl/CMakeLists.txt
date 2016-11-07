@@ -1,0 +1,62 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.4.7 FATAL_ERROR)
+project (dbus-minimal)
+
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
+add_definitions (-Wl,-z,defs)
+
+SET (CMAKE_C_FLAGS "-Wall -Winvalid-pch -ffunction-sections -fdata-sections")
+SET (CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11")
+SET (CMAKE_C_FLAGS_RELEASE "-Wall -Winvalid-pch -ffunction-sections -fdata-sections -ffast-math -DNDEBUG")
+SET (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c++11")
+
+SET (CMAKE_VERBOSE_MAKEFILE off)
+
+include (FindPkgConfig)
+#pkg_check_modules (BLUEZ REQUIRED "bluez")
+#INCLUDE_DIRECTORIES (${BLUEZ_INCLUDE_DIRS})
+#link_directories(${BLUEZ_LIBRARY_DIRS})
+
+#pkg_check_modules (NCURSES REQUIRED "ncurses")
+#INCLUDE_DIRECTORIES (${NCURSES_INCLUDE_DIRS})
+#link_directories(${NCURSES_LIBRARY_DIRS})
+
+pkg_check_modules (GLIB REQUIRED "glib-2.0")
+INCLUDE_DIRECTORIES (${GLIB_INCLUDE_DIRS})
+link_directories(${GLIB_LIBRARY_DIRS})
+
+pkg_check_modules (DBUS REQUIRED "dbus-1")
+INCLUDE_DIRECTORIES (${DBUS_INCLUDE_DIRS})
+link_directories(${DBUS_LIBRARY_DIRS})
+
+INCLUDE_DIRECTORIES ("src/")
+LIST (APPEND APP_SOURCES "src/advertising.c")
+LIST (APPEND APP_SOURCES "src/advertising.h")
+LIST (APPEND APP_SOURCES "src/agent.c")
+LIST (APPEND APP_SOURCES "src/agent.h")
+LIST (APPEND APP_SOURCES "src/display.c")
+LIST (APPEND APP_SOURCES "src/display.h")
+LIST (APPEND APP_SOURCES "src/gatt.c")
+LIST (APPEND APP_SOURCES "src/gatt.h")
+LIST (APPEND APP_SOURCES "src/main.c")
+LIST (APPEND APP_SOURCES "src/gdbus/client.c")
+LIST (APPEND APP_SOURCES "src/gdbus/gdbus.h")
+LIST (APPEND APP_SOURCES "src/gdbus/mainloop.c")
+LIST (APPEND APP_SOURCES "src/gdbus/object.c")
+LIST (APPEND APP_SOURCES "src/gdbus/polkit.c")
+LIST (APPEND APP_SOURCES "src/gdbus/watch.c")
+LIST (APPEND APP_SOURCES "src/monitor/uuid.c")
+LIST (APPEND APP_SOURCES "src/monitor/uuid.c")
+LIST (APPEND APP_SOURCES "src/shared/util.c")
+LIST (APPEND APP_SOURCES "src/shared/util.c")
+
+
+add_executable (${PROJECT_NAME} ${APP_SOURCES})
+TARGET_LINK_LIBRARIES (${PROJECT_NAME} readline)
+TARGET_LINK_LIBRARIES (${PROJECT_NAME} ${GLIB_LIBRARIES})
+TARGET_LINK_LIBRARIES (${PROJECT_NAME} ${DBUS_LIBRARIES})
+#TARGET_LINK_LIBRARIES (${PROJECT_NAME} ${BLUEZ_LIBRARIES})
+#TARGET_LINK_LIBRARIES (${PROJECT_NAME} ${NCURSES_LIBRARIES})
+#TARGET_LINK_LIBRARIES (${PROJECT_NAME} pthread)
