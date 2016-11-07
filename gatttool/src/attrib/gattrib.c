@@ -36,10 +36,10 @@
 #include <bluetooth/bluetooth.h>
 
 #include "btio/btio.h"
-#include "src/log.h"
-#include "src/shared/util.h"
-#include "src/shared/att.h"
-#include "src/shared/queue.h"
+#include "shared/log.h"
+#include "shared/util.h"
+#include "shared/att.h"
+#include "shared/queue.h"
 #include "attrib/gattrib.h"
 
 struct _GAttrib {

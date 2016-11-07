@@ -40,7 +40,7 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 
-#include "src/shared/util.h"
+#include "shared/util.h"
 #include "log.h"
 
 #define LOG_IDENT "bluetoothd"

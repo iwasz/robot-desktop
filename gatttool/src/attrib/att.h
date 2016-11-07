@@ -22,7 +22,7 @@
  *
  */
 
-#include "src/shared/crypto.h"
+#include "shared/crypto.h"
 
 /* Len of signature in write signed packet */
 #define ATT_SIGNATURE_LEN		12
@@ -96,14 +96,14 @@
 #define ATT_FIND_INFO_RESP_FMT_128BIT		0x02
 
 struct att_data_list {
-	uint16_t num;
-	uint16_t len;
-	uint8_t **data;
+        uint16_t num;
+        uint16_t len;
+        uint8_t **data;
 };
 
 struct att_range {
-	uint16_t start;
-	uint16_t end;
+        uint16_t start;
+        uint16_t end;
 };
 
 struct att_data_list *att_data_list_alloc(uint16_t num, uint16_t len);
@@ -111,73 +111,73 @@ void att_data_list_free(struct att_data_list *list);
 
 const char *att_ecode2str(uint8_t status);
 uint16_t enc_read_by_grp_req(uint16_t start, uint16_t end, bt_uuid_t *uuid,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t dec_read_by_grp_req(const uint8_t *pdu, size_t len, uint16_t *start,
-					uint16_t *end, bt_uuid_t *uuid);
+                                        uint16_t *end, bt_uuid_t *uuid);
 uint16_t enc_read_by_grp_resp(struct att_data_list *list, uint8_t *pdu,
-								size_t len);
+                                                                size_t len);
 uint16_t enc_find_by_type_req(uint16_t start, uint16_t end, bt_uuid_t *uuid,
-				const uint8_t *value, size_t vlen, uint8_t *pdu,
-				size_t len);
+                                const uint8_t *value, size_t vlen, uint8_t *pdu,
+                                size_t len);
 uint16_t dec_find_by_type_req(const uint8_t *pdu, size_t len, uint16_t *start,
-		uint16_t *end, bt_uuid_t *uuid, uint8_t *value, size_t *vlen);
+                uint16_t *end, bt_uuid_t *uuid, uint8_t *value, size_t *vlen);
 uint16_t enc_find_by_type_resp(GSList *ranges, uint8_t *pdu, size_t len);
 GSList *dec_find_by_type_resp(const uint8_t *pdu, size_t len);
 struct att_data_list *dec_read_by_grp_resp(const uint8_t *pdu, size_t len);
 uint16_t enc_read_by_type_req(uint16_t start, uint16_t end, bt_uuid_t *uuid,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t dec_read_by_type_req(const uint8_t *pdu, size_t len, uint16_t *start,
-					uint16_t *end, bt_uuid_t *uuid);
+                                        uint16_t *end, bt_uuid_t *uuid);
 uint16_t enc_read_by_type_resp(struct att_data_list *list, uint8_t *pdu,
-								size_t len);
+                                                                size_t len);
 uint16_t enc_write_cmd(uint16_t handle, const uint8_t *value, size_t vlen,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t dec_write_cmd(const uint8_t *pdu, size_t len, uint16_t *handle,
-						uint8_t *value, size_t *vlen);
+                                                uint8_t *value, size_t *vlen);
 uint16_t enc_signed_write_cmd(uint16_t handle,
-					const uint8_t *value, size_t vlen,
-					struct bt_crypto *crypto,
-					const uint8_t csrk[16],
-					uint32_t sign_cnt,
-					uint8_t *pdu, size_t len);
+                                        const uint8_t *value, size_t vlen,
+                                        struct bt_crypto *crypto,
+                                        const uint8_t csrk[16],
+                                        uint32_t sign_cnt,
+                                        uint8_t *pdu, size_t len);
 uint16_t dec_signed_write_cmd(const uint8_t *pdu, size_t len,
-						uint16_t *handle,
-						uint8_t *value, size_t *vlen,
-						uint8_t signature[12]);
+                                                uint16_t *handle,
+                                                uint8_t *value, size_t *vlen,
+                                                uint8_t signature[12]);
 struct att_data_list *dec_read_by_type_resp(const uint8_t *pdu, size_t len);
 uint16_t enc_write_req(uint16_t handle, const uint8_t *value, size_t vlen,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t dec_write_req(const uint8_t *pdu, size_t len, uint16_t *handle,
-						uint8_t *value, size_t *vlen);
+                                                uint8_t *value, size_t *vlen);
 uint16_t enc_write_resp(uint8_t *pdu);
 uint16_t dec_write_resp(const uint8_t *pdu, size_t len);
 uint16_t enc_read_req(uint16_t handle, uint8_t *pdu, size_t len);
 uint16_t enc_read_blob_req(uint16_t handle, uint16_t offset, uint8_t *pdu,
-								size_t len);
+                                                                size_t len);
 uint16_t dec_read_req(const uint8_t *pdu, size_t len, uint16_t *handle);
 uint16_t dec_read_blob_req(const uint8_t *pdu, size_t len, uint16_t *handle,
-							uint16_t *offset);
+                                                        uint16_t *offset);
 uint16_t enc_read_resp(uint8_t *value, size_t vlen, uint8_t *pdu, size_t len);
 uint16_t enc_read_blob_resp(uint8_t *value, size_t vlen, uint16_t offset,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 ssize_t dec_read_resp(const uint8_t *pdu, size_t len, uint8_t *value,
-								size_t vlen);
+                                                                size_t vlen);
 uint16_t enc_error_resp(uint8_t opcode, uint16_t handle, uint8_t status,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t enc_find_info_req(uint16_t start, uint16_t end, uint8_t *pdu,
-								size_t len);
+                                                                size_t len);
 uint16_t dec_find_info_req(const uint8_t *pdu, size_t len, uint16_t *start,
-								uint16_t *end);
+                                                                uint16_t *end);
 uint16_t enc_find_info_resp(uint8_t format, struct att_data_list *list,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 struct att_data_list *dec_find_info_resp(const uint8_t *pdu, size_t len,
-							uint8_t *format);
+                                                        uint8_t *format);
 uint16_t enc_notification(uint16_t handle, uint8_t *value, size_t vlen,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t enc_indication(uint16_t handle, uint8_t *value, size_t vlen,
-						uint8_t *pdu, size_t len);
+                                                uint8_t *pdu, size_t len);
 uint16_t dec_indication(const uint8_t *pdu, size_t len, uint16_t *handle,
-						uint8_t *value, size_t vlen);
+                                                uint8_t *value, size_t vlen);
 uint16_t enc_confirmation(uint8_t *pdu, size_t len);
 
 uint16_t enc_mtu_req(uint16_t mtu, uint8_t *pdu, size_t len);
@@ -186,16 +186,16 @@ uint16_t enc_mtu_resp(uint16_t mtu, uint8_t *pdu, size_t len);
 uint16_t dec_mtu_resp(const uint8_t *pdu, size_t len, uint16_t *mtu);
 
 uint16_t enc_prep_write_req(uint16_t handle, uint16_t offset,
-					const uint8_t *value, size_t vlen,
-					uint8_t *pdu, size_t len);
+                                        const uint8_t *value, size_t vlen,
+                                        uint8_t *pdu, size_t len);
 uint16_t dec_prep_write_req(const uint8_t *pdu, size_t len, uint16_t *handle,
-				uint16_t *offset, uint8_t *value, size_t *vlen);
+                                uint16_t *offset, uint8_t *value, size_t *vlen);
 uint16_t enc_prep_write_resp(uint16_t handle, uint16_t offset,
-					const uint8_t *value, size_t vlen,
-					uint8_t *pdu, size_t len);
+                                        const uint8_t *value, size_t vlen,
+                                        uint8_t *pdu, size_t len);
 uint16_t dec_prep_write_resp(const uint8_t *pdu, size_t len, uint16_t *handle,
-						uint16_t *offset, uint8_t *value,
-						size_t *vlen);
+                                                uint16_t *offset, uint8_t *value,
+                                                size_t *vlen);
 uint16_t enc_exec_write_req(uint8_t flags, uint8_t *pdu, size_t len);
 uint16_t dec_exec_write_req(const uint8_t *pdu, size_t len, uint8_t *flags);
 uint16_t enc_exec_write_resp(uint8_t *pdu);

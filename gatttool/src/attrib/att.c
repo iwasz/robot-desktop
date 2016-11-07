@@ -35,7 +35,7 @@
 #include <bluetooth/bluetooth.h>
 #include "lib/uuid.h"
 
-#include "src/shared/util.h"
+#include "shared/util.h"
 #include "att.h"
 
 static inline void put_uuid_le(const bt_uuid_t *src, void *dst)

@@ -35,7 +35,7 @@
 #include <bluetooth/sdp_lib.h>
 #include "lib/uuid.h"
 
-#include "src/shared/util.h"
+#include "shared/util.h"
 #include "att.h"
 #include "gattrib.h"
 #include "gatt.h"

@@ -29,7 +29,7 @@
 
 #include <glib.h>
 
-#include "src/shared/io.h"
+#include "shared/io.h"
 
 struct io_watch {
 	struct io *io;
