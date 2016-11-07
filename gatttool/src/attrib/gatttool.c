@@ -526,49 +526,11 @@ static GOptionEntry options[] = {
 
 int main(int argc, char *argv[])
 {
-//        GOptionContext *context;
-//        GOptionGroup *gatt_group, *params_group, *char_rw_group;
         GError *gerr = NULL;
         GIOChannel *chan;
 
         opt_dst_type = g_strdup("public");
         opt_sec_level = g_strdup("low");
-
-//        context = g_option_context_new(NULL);
-//        g_option_context_add_main_entries(context, options, NULL);
-
-        /* GATT commands */
-//        gatt_group = g_option_group_new("gatt", "GATT commands",
-//                                        "Show all GATT commands", NULL, NULL);
-//        g_option_context_add_group(context, gatt_group);
-//        g_option_group_add_entries(gatt_group, gatt_options);
-
-        /* Primary Services and Characteristics arguments */
-//        params_group = g_option_group_new("params",
-//                        "Primary Services/Characteristics arguments",
-//                        "Show all Primary Services/Characteristics arguments",
-//                        NULL, NULL);
-//        g_option_context_add_group(context, params_group);
-//        g_option_group_add_entries(params_group, primary_char_options);
-
-//        /* Characteristics value/descriptor read/write arguments */
-//        char_rw_group = g_option_group_new("char-read-write",
-//                "Characteristics Value/Descriptor Read/Write arguments",
-//                "Show all Characteristics Value/Descriptor Read/Write "
-//                "arguments",
-//                NULL, NULL);
-//        g_option_context_add_group(context, char_rw_group);
-//        g_option_group_add_entries(char_rw_group, char_rw_options);
-
-//        if (!g_option_context_parse(context, &argc, &argv, &gerr)) {
-//                g_printerr("%s\n", gerr->message);
-//                g_clear_error(&gerr);
-//        }
-
-//        if (opt_interactive) {
-//                interactive(opt_src, opt_dst, opt_dst_type, opt_psm);
-//                goto done;
-//        }
 
         if (opt_primary)
                 operation = primary;
