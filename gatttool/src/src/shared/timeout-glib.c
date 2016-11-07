@@ -17,66 +17,62 @@
  *
  */
 
-#include <stdlib.h>
-
-#include "mainloop.h"
-#include "util.h"
 #include "timeout.h"
 
+#include <glib.h>
+
 struct timeout_data {
-	int id;
 	timeout_func_t func;
 	timeout_destroy_func_t destroy;
-	unsigned int timeout;
 	void *user_data;
 };
 
-static void timeout_callback(int id, void *user_data)
+static gboolean timeout_callback(gpointer user_data)
 {
-	struct timeout_data *data = user_data;
+	struct timeout_data *data  = user_data;
 
-	if (data->func(data->user_data) &&
-			!mainloop_modify_timeout(data->id, data->timeout))
-		return;
+	if (data->func(data->user_data))
+		return TRUE;
 
-	mainloop_remove_timeout(data->id);
+	return FALSE;
 }
 
-static void timeout_destroy(void *user_data)
+static void timeout_destroy(gpointer user_data)
 {
 	struct timeout_data *data = user_data;
 
 	if (data->destroy)
 		data->destroy(data->user_data);
 
-	free(data);
+	g_free(data);
 }
 
 unsigned int timeout_add(unsigned int timeout, timeout_func_t func,
 			void *user_data, timeout_destroy_func_t destroy)
 {
 	struct timeout_data *data;
+	guint id;
 
-	data = new0(struct timeout_data, 1);
-	data->func = func;
-	data->user_data = user_data;
-	data->timeout = timeout;
-	data->destroy = destroy;
-
-	data->id = mainloop_add_timeout(timeout, timeout_callback, data,
-							timeout_destroy);
-	if (data->id < 0) {
-		free(data);
+	data = g_try_new0(struct timeout_data, 1);
+	if (!data)
 		return 0;
-	}
 
-	return (unsigned int) data->id;
+	data->func = func;
+	data->destroy = destroy;
+	data->user_data = user_data;
+
+	id = g_timeout_add_full(G_PRIORITY_DEFAULT, timeout, timeout_callback,
+						data, timeout_destroy);
+	if (!id)
+		g_free(data);
+
+	return id;
 }
 
 void timeout_remove(unsigned int id)
 {
-	if (!id)
-		return;
+	GSource *source = g_main_context_find_source_by_id(NULL, id);
 
-	mainloop_remove_timeout((int) id);
+	if (source)
+		g_source_destroy(source);
 }
