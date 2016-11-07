@@ -131,12 +131,14 @@ static guint setup_standard_input(void)
         return source;
 }
 
+
 static void connect_handler(DBusConnection *connection, void *user_data)
 {
         rl_set_prompt(PROMPT_ON);
         printf("\r");
         rl_on_new_line();
         rl_redisplay();
+
 }
 
 static void disconnect_handler(DBusConnection *connection, void *user_data)
