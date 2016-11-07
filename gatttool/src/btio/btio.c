@@ -55,8 +55,6 @@
 
 typedef enum {
         BT_IO_L2CAP,
-        BT_IO_RFCOMM,
-        BT_IO_SCO,
         BT_IO_INVALID,
 } BtIOType;
 
@@ -129,10 +127,6 @@ static BtIOType bt_io_get_type(GIOChannel *io, GError **gerr)
         }
 
         switch (proto) {
-        case BTPROTO_RFCOMM:
-                return BT_IO_RFCOMM;
-        case BTPROTO_SCO:
-                return BT_IO_SCO;
         case BTPROTO_L2CAP:
                 return BT_IO_L2CAP;
         default:
@@ -618,7 +612,7 @@ static gboolean parse_set_opts(struct set_opts *opts, GError **err,
         memset(opts, 0, sizeof(*opts));
 
         /* Set defaults */
-        opts->type = BT_IO_SCO;
+        opts->type = BT_IO_L2CAP;
         opts->defer = DEFAULT_DEFER_TIMEOUT;
         opts->master = -1;
         opts->mode = L2CAP_MODE_BASIC;
@@ -653,10 +647,6 @@ static gboolean parse_set_opts(struct set_opts *opts, GError **err,
                         break;
                 case BT_IO_OPT_SEC_LEVEL:
                         opts->sec_level = va_arg(args, int);
-                        break;
-                case BT_IO_OPT_CHANNEL:
-                        opts->type = BT_IO_RFCOMM;
-                        opts->channel = va_arg(args, int);
                         break;
                 case BT_IO_OPT_PSM:
                         opts->type = BT_IO_L2CAP;
@@ -998,8 +988,6 @@ static gboolean get_valist(GIOChannel *io, BtIOType type, GError **err,
         switch (type) {
         case BT_IO_L2CAP:
                 return l2cap_get(sock, err, opt1, args);
-        case BT_IO_RFCOMM:
-        case BT_IO_SCO:
         case BT_IO_INVALID:
         default:
                 g_set_error(err, BT_IO_ERROR, EINVAL,
@@ -1064,8 +1052,6 @@ gboolean bt_io_set(GIOChannel *io, GError **err, BtIOOption opt1, ...)
                 return l2cap_set(sock, opts.src_type, opts.sec_level, opts.imtu,
                                         opts.omtu, opts.mode, opts.master,
                                         opts.flushable, opts.priority, err);
-        case BT_IO_RFCOMM:
-        case BT_IO_SCO:
         case BT_IO_INVALID:
         default:
                 g_set_error(err, BT_IO_ERROR, EINVAL,
@@ -1115,8 +1101,6 @@ static GIOChannel *create_io(gboolean server, struct set_opts *opts,
                         goto failed;
                 break;
 
-        case BT_IO_RFCOMM:
-        case BT_IO_SCO:
         case BT_IO_INVALID:
         default:
                 g_set_error(err, BT_IO_ERROR, EINVAL,
@@ -1165,8 +1149,6 @@ GIOChannel *bt_io_connect(BtIOConnect connect, gpointer user_data,
                 err = l2cap_connect(sock, &opts.dst, opts.dst_type,
                                                         opts.psm, opts.cid);
                 break;
-        case BT_IO_RFCOMM:
-        case BT_IO_SCO:
         case BT_IO_INVALID:
         default:
                 g_set_error(gerr, BT_IO_ERROR, EINVAL,

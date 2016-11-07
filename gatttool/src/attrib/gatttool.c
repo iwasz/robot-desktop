@@ -46,14 +46,15 @@
 #include "gatttool.h"
 
 static char *opt_src = NULL;
-static char *opt_dst = NULL;
+static char *opt_dst = "02:80:E1:00:34:12";
 static char *opt_dst_type = NULL;
-static char *opt_value = NULL;
 static char *opt_sec_level = NULL;
+static char *opt_value = "00";
+
 static bt_uuid_t *opt_uuid = NULL;
-static int opt_start = 0x0001;
-static int opt_end = 0xffff;
-static int opt_handle = -1;
+static int opt_start = 0x0001; // "Starting handle(optional)"
+static int opt_end = 0xffff; // "Ending handle(optional)"
+static int opt_handle = 0x0012;
 static int opt_mtu = 0;
 static int opt_psm = 0;
 static gboolean opt_primary = FALSE;
@@ -62,7 +63,7 @@ static gboolean opt_char_read = FALSE;
 static gboolean opt_listen = FALSE;
 static gboolean opt_char_desc = FALSE;
 static gboolean opt_char_write = FALSE;
-static gboolean opt_char_write_req = FALSE;
+static gboolean opt_char_write_req = TRUE;
 static gboolean opt_interactive = FALSE;
 static GMainLoop *event_loop;
 static gboolean got_error = FALSE;
@@ -472,6 +473,10 @@ static GOptionEntry primary_char_options[] = {
                 "Starting handle(optional)", "0x0001" },
         { "end", 'e' , 0, G_OPTION_ARG_INT, &opt_end,
                 "Ending handle(optional)", "0xffff" },
+        /*
+         * To jest opcja, która wywołuje funkcję. parse_uuid, która ustawia
+         * opt_uuid.
+         */
         { "uuid", 'u', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
                 parse_uuid, "UUID16 or UUID128(optional)", "0x1801"},
         { NULL },
@@ -611,11 +616,11 @@ int main(int argc, char *argv[])
         g_main_loop_unref(event_loop);
 
 done:
-        g_option_context_free(context);
-        g_free(opt_src);
-        g_free(opt_dst);
-        g_free(opt_uuid);
-        g_free(opt_sec_level);
+//        g_option_context_free(context);
+//        g_free(opt_src);
+//        g_free(opt_dst);
+//        g_free(opt_uuid);
+//        g_free(opt_sec_level);
 
         if (got_error)
                 exit(EXIT_FAILURE);
