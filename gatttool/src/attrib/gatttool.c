@@ -22,9 +22,9 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+//#ifdef HAVE_CONFIG_H
+//#include <config.h>
+//#endif
 
 #include <errno.h>
 #include <stdlib.h>
@@ -32,10 +32,10 @@
 
 #include <glib.h>
 
-#include "lib/bluetooth.h"
-#include "lib/hci.h"
-#include "lib/hci_lib.h"
-#include "lib/sdp.h"
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/sdp.h>
 #include "lib/uuid.h"
 
 #include "src/shared/util.h"
@@ -49,7 +49,7 @@ static char *opt_src = NULL;
 static char *opt_dst = "02:80:E1:00:34:12";
 static char *opt_dst_type = NULL;
 static char *opt_sec_level = NULL;
-static char *opt_value = "20";
+static char *opt_value = "40";
 
 static bt_uuid_t *opt_uuid = NULL;
 static int opt_start = 0x0001; // "Starting handle(optional)"
