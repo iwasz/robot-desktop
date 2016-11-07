@@ -54,7 +54,7 @@
 #define PROMPT_ON	COLOR_BLUE "[bluetooth]" COLOR_OFF "# "
 #define PROMPT_OFF	"Waiting to connect to bluetoothd..."
 
-#define VERSION 1.666
+#define VERSION "1.666"
 
 static GMainLoop *main_loop;
 static DBusConnection *dbus_conn;
@@ -2352,28 +2352,6 @@ static guint setup_signalfd(void)
         return source;
 }
 
-static gboolean option_version = FALSE;
-
-static gboolean parse_agent(const char *key, const char *value,
-                                        gpointer user_data, GError **error)
-{
-        if (value)
-                auto_register_agent = g_strdup(value);
-        else
-                auto_register_agent = g_strdup("");
-
-        return TRUE;
-}
-
-static GOptionEntry options[] = {
-        { "version", 'v', 0, G_OPTION_ARG_NONE, &option_version,
-                                "Show version information and exit" },
-        { "agent", 'a', G_OPTION_FLAG_OPTIONAL_ARG,
-                                G_OPTION_ARG_CALLBACK, parse_agent,
-                                "Register agent handler", "CAPABILITY" },
-        { NULL },
-};
-
 static void client_ready(GDBusClient *client, void *user_data)
 {
         if (!input)
@@ -2382,29 +2360,8 @@ static void client_ready(GDBusClient *client, void *user_data)
 
 int main(int argc, char *argv[])
 {
-        GOptionContext *context;
-        GError *error = NULL;
         GDBusClient *client;
         guint signal;
-
-        context = g_option_context_new(NULL);
-        g_option_context_add_main_entries(context, options, NULL);
-
-        if (g_option_context_parse(context, &argc, &argv, &error) == FALSE) {
-                if (error != NULL) {
-                        g_printerr("%s\n", error->message);
-                        g_error_free(error);
-                } else
-                        g_printerr("An unknown error occurred\n");
-                exit(1);
-        }
-
-        g_option_context_free(context);
-
-        if (option_version == TRUE) {
-                printf("%s\n", VERSION);
-                exit(0);
-        }
 
         main_loop = g_main_loop_new(NULL, FALSE);
         dbus_conn = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, NULL);
