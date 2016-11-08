@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <gtk/gtk.h>
 #include <glib.h>
 
 #include <bluetooth/bluetooth.h>
@@ -119,8 +120,14 @@ static gboolean listen_start(gpointer user_data)
         return FALSE;
 }
 
+// TODO yyyyy
+GIOChannel *chan;
+
+
 static void connect_cb(GIOChannel *io, GError *err, gpointer user_data)
 {
+        chan = io;
+#if 0
         GAttrib *attrib;
         uint16_t mtu;
         uint16_t cid;
@@ -149,8 +156,10 @@ static void connect_cb(GIOChannel *io, GError *err, gpointer user_data)
 
         if (opt_listen)
                 g_idle_add(listen_start, attrib);
+#endif
 
-        operation(attrib);
+//        operation(attrib);
+        printf ("Connected\n");
 }
 
 static void primary_all_cb(uint8_t status, GSList *services, void *user_data)
@@ -160,7 +169,7 @@ static void primary_all_cb(uint8_t status, GSList *services, void *user_data)
         if (status) {
                 g_printerr("Discover all primary services failed: %s\n",
                                                         att_ecode2str(status));
-                goto done;
+//                goto done;
         }
 
         for (l = services; l; l = l->next) {
@@ -169,8 +178,8 @@ static void primary_all_cb(uint8_t status, GSList *services, void *user_data)
                         "uuid: %s\n", prim->range.start, prim->range.end, prim->uuid);
         }
 
-done:
-        g_main_loop_quit(event_loop);
+//done:
+//        g_main_loop_quit(event_loop);
 }
 
 static void primary_by_uuid_cb(uint8_t status, GSList *ranges, void *user_data)
@@ -180,7 +189,7 @@ static void primary_by_uuid_cb(uint8_t status, GSList *ranges, void *user_data)
         if (status != 0) {
                 g_printerr("Discover primary services by UUID failed: %s\n",
                                                         att_ecode2str(status));
-                goto done;
+//                goto done;
         }
 
         for (l = ranges; l; l = l->next) {
@@ -189,8 +198,8 @@ static void primary_by_uuid_cb(uint8_t status, GSList *ranges, void *user_data)
                                                 range->start, range->end);
         }
 
-done:
-        g_main_loop_quit(event_loop);
+//done:
+//        g_main_loop_quit(event_loop);
 }
 
 static gboolean primary(gpointer user_data)
@@ -214,7 +223,7 @@ static void char_discovered_cb(uint8_t status, GSList *characteristics,
         if (status) {
                 g_printerr("Discover all characteristics failed: %s\n",
                                                         att_ecode2str(status));
-                goto done;
+//                goto done;
         }
 
         for (l = characteristics; l; l = l->next) {
@@ -225,8 +234,8 @@ static void char_discovered_cb(uint8_t status, GSList *characteristics,
                         chars->properties, chars->value_handle, chars->uuid);
         }
 
-done:
-        g_main_loop_quit(event_loop);
+//done:
+//        g_main_loop_quit(event_loop);
 }
 
 static gboolean characteristics(gpointer user_data)
@@ -249,22 +258,22 @@ static void char_read_cb(guint8 status, const guint8 *pdu, guint16 plen,
         if (status != 0) {
                 g_printerr("Characteristic value/descriptor read failed: %s\n",
                                                         att_ecode2str(status));
-                goto done;
+//                goto done;
         }
 
         vlen = dec_read_resp(pdu, plen, value, sizeof(value));
         if (vlen < 0) {
                 g_printerr("Protocol error\n");
-                goto done;
+//                goto done;
         }
         g_print("Characteristic value/descriptor: ");
         for (i = 0; i < vlen; i++)
                 g_print("%02x ", value[i]);
         g_print("\n");
 
-done:
-        if (!opt_listen)
-                g_main_loop_quit(event_loop);
+//done:
+//        if (!opt_listen)
+//                g_main_loop_quit(event_loop);
 }
 
 static void char_read_by_uuid_cb(guint8 status, const guint8 *pdu,
@@ -276,12 +285,12 @@ static void char_read_by_uuid_cb(guint8 status, const guint8 *pdu,
         if (status != 0) {
                 g_printerr("Read characteristics by UUID failed: %s\n",
                                                         att_ecode2str(status));
-                goto done;
+//                goto done;
         }
 
         list = dec_read_by_type_resp(pdu, plen);
         if (list == NULL)
-                goto done;
+//                goto done;
 
         for (i = 0; i < list->num; i++) {
                 uint8_t *value = list->data[i];
@@ -296,8 +305,8 @@ static void char_read_by_uuid_cb(guint8 status, const guint8 *pdu,
 
         att_data_list_free(list);
 
-done:
-        g_main_loop_quit(event_loop);
+//done:
+//        g_main_loop_quit(event_loop);
 }
 
 static gboolean characteristics_read(gpointer user_data)
@@ -369,19 +378,19 @@ static void char_write_req_cb(guint8 status, const guint8 *pdu, guint16 plen,
         if (status != 0) {
                 g_printerr("Characteristic Write Request failed: "
                                                 "%s\n", att_ecode2str(status));
-                goto done;
+//                goto done;
         }
 
         if (!dec_write_resp(pdu, plen) && !dec_exec_write_resp(pdu, plen)) {
                 g_printerr("Protocol error\n");
-                goto done;
+//                goto done;
         }
 
         g_print("Characteristic value was written successfully\n");
 
-done:
-        if (!opt_listen)
-                g_main_loop_quit(event_loop);
+//done:
+//        if (!opt_listen)
+//                g_main_loop_quit(event_loop);
 }
 
 static gboolean characteristics_write_req(gpointer user_data)
@@ -417,6 +426,125 @@ error:
         return FALSE;
 }
 
+
+static gboolean characteristics_write_reqInstant(GIOChannel *io, int handle, const char *value)
+{
+        GAttrib *attrib;
+        uint16_t mtu;
+        uint16_t cid;
+        GError *gerr = NULL;
+
+
+        bt_io_get(io, &gerr, BT_IO_OPT_IMTU, &mtu,
+                                BT_IO_OPT_CID, &cid, BT_IO_OPT_INVALID);
+
+        if (gerr) {
+                g_printerr("Can't detect MTU, using default: %s",
+                                                                gerr->message);
+                g_error_free(gerr);
+                mtu = ATT_DEFAULT_LE_MTU;
+        }
+
+        if (cid == ATT_CID)
+                mtu = ATT_DEFAULT_LE_MTU;
+
+        attrib = g_attrib_new(io, mtu, false);
+
+        if (opt_listen)
+                g_idle_add(listen_start, attrib);
+
+        // ------------------------------------
+
+        uint8_t *valueConv;
+        size_t len;
+
+        if (handle <= 0) {
+                g_printerr("A valid handle is required\n");
+                goto error;
+        }
+
+        if (value == NULL || value[0] == '\0') {
+                g_printerr("A value is required\n");
+                goto error;
+        }
+
+        len = gatt_attr_data_from_string(value, &valueConv);
+        if (len == 0) {
+                g_printerr("Invalid value\n");
+                goto error;
+        }
+
+        gatt_write_char(attrib, handle, valueConv, len, char_write_req_cb,NULL);
+
+//        g_free(value);
+        return FALSE;
+
+error:
+        g_main_loop_quit(event_loop);
+        return FALSE;
+}
+
+
+
+
+
+
+//static gboolean characteristics_write_reqInstant(GIOChannel *io, int handle, const char *value)
+
+static void cmd_char_write(int handle, const char *value)
+{
+        uint8_t *data;
+        size_t plen;
+//        int handle;
+
+//	if (conn_state != STATE_CONNECTED) {
+//		failed("Disconnected\n");
+//		return;
+//	}
+
+//	if (argcp < 3) {
+//		rl_printf("Usage: %s <handle> <new value>\n", argvp[0]);
+//		return;
+//	}
+
+//	handle = strtohandle(argvp[1]);
+//	if (handle <= 0) {
+//		error("A valid handle is required\n");
+//		return;
+//	}
+
+        plen = gatt_attr_data_from_string (value, &data);
+
+        if (plen == 0) {
+                error("Invalid value\n");
+                return;
+        }
+
+//	if (g_strcmp0("char-write-req", argvp[0]) == 0)
+                gatt_write_char(attrib, handle, data, plen,
+                                        char_write_req_cb, NULL);
+//	else
+//		gatt_write_cmd(attrib, handle, data, plen, NULL, NULL);
+
+        g_free(data);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 static void char_desc_cb(uint8_t status, GSList *descriptors, void *user_data)
 {
         GSList *l;
@@ -434,8 +562,8 @@ static void char_desc_cb(uint8_t status, GSList *descriptors, void *user_data)
                                                                 desc->uuid);
         }
 
-        if (!opt_listen)
-                g_main_loop_quit(event_loop);
+//        if (!opt_listen)
+//                g_main_loop_quit(event_loop);
 }
 
 static gboolean characteristics_desc(gpointer user_data)
@@ -524,6 +652,7 @@ static GOptionEntry options[] = {
         { NULL },
 };
 
+
 int main(int argc, char *argv[])
 {
         GError *gerr = NULL;
@@ -569,9 +698,32 @@ int main(int argc, char *argv[])
 
         event_loop = g_main_loop_new(NULL, FALSE);
 
-        g_main_loop_run(event_loop);
+
+
+/*------------------------------------------*/
+
+        GtkBuilder      *builder;
+        GtkWidget       *window;
+
+        gtk_init(&argc, &argv);
+
+        builder = gtk_builder_new();
+        gtk_builder_add_from_file (builder, "../src/attrib/robot-console.glade", NULL);
+
+        window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
+        gtk_builder_connect_signals(builder, NULL);
+
+        g_object_unref(builder);
+
+        gtk_widget_show(window);
+
+        g_main_run (event_loop);
+
+        /*------------------------------------------*/
 
         g_main_loop_unref(event_loop);
+
+
 
 done:
 //        g_option_context_free(context);
@@ -584,4 +736,39 @@ done:
                 exit(EXIT_FAILURE);
         else
                 exit(EXIT_SUCCESS);
+}
+
+void on_window_main_destroy()
+{
+    gtk_main_quit();
+}
+
+void fwdPressed ()
+{
+        printf("FWD press\n");
+        characteristics_write_reqInstant(chan, 0x12, "20");
+}
+
+void backPressed ()
+{
+        printf("BACK press\n");
+//        fflush(stdout);
+}
+
+void leftPressed ()
+{
+        printf("LEFT press\n");
+//        fflush(stdout);
+}
+
+void rightPressed ()
+{
+        printf("RIGHT press\n");
+//        fflush(stdout);
+}
+
+void buttonReleased ()
+{
+        printf("button release\n");
+        characteristics_write_reqInstant(chan, 0x12, "00");
 }

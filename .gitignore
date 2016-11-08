@@ -4,3 +4,4 @@ dbus-minimal/build
 dbus-minimal/CMakeLists.txt.user
 gatttool/build
 gatttool/CMakeLists.txt.user
+*~
