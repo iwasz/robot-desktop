@@ -102,6 +102,7 @@ GIOChannel *gatt_connect(const char *src, const char *dst,
         return chan;
 }
 
+// TODO remove
 size_t gatt_attr_data_from_string(const char *str, uint8_t **data)
 {
         char tmp[3];

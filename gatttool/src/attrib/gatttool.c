@@ -382,7 +382,7 @@ static void char_write_req_cb(guint8 status, const guint8 *pdu, guint16 plen,
 //                goto done;
         }
 
-        g_print("Characteristic value was written successfully\n");
+//        g_print("Characteristic value was written successfully\n");
 
 //done:
 //        if (!opt_listen)
@@ -627,81 +627,16 @@ void on_window_main_destroy()
 
 
 
-static gboolean characteristics_write_reqInstant(int handle, const char *value)
+static gboolean characteristics_write_reqInstant(int handle, uint8_t *valueConv, size_t len)
 {
-//        uint8_t *value;
-//        size_t plen;
-//        int handle;
-
-//        if (conn_state != STATE_CONNECTED) {
-//                failed("Disconnected\n");
-//                return;
-//        }
-
-//        if (argcp < 3) {
-//                rl_printf("Usage: %s <handle> <new value>\n", argvp[0]);
-//                return;
-//        }
-
-//        handle = strtohandle(argvp[1]);
-//        if (handle <= 0) {
-//                error("A valid handle is required\n");
-//                return;
-//        }
-
-//        plen = gatt_attr_data_from_string(argvp[2], &value);
-//        if (plen == 0) {
-//                error("Invalid value\n");
-//                return;
-//        }
-
-//        if (g_strcmp0("char-write-req", argvp[0]) == 0)
-//                gatt_write_char(attrib, handle, value, plen,
-//                                        char_write_req_cb, NULL);
-//        else
-//                gatt_write_cmd(attrib, handle, value, plen, NULL, NULL);
-
-//        g_free(value);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // ------------------------------------
-
-        uint8_t *valueConv;
-        size_t len;
-
         if (handle <= 0) {
                 g_printerr("A valid handle is required\n");
                 goto error;
         }
 
-        if (value == NULL || value[0] == '\0') {
-                g_printerr("A value is required\n");
-                goto error;
-        }
-
-        len = gatt_attr_data_from_string(value, &valueConv);
-        if (len == 0) {
-                g_printerr("Invalid value\n");
-                goto error;
-        }
-
         gatt_write_char(attrib, handle, valueConv, len, char_write_req_cb,NULL);
 
-//        g_free(value);
-        return FALSE;
+        return TRUE;
 
 error:
         g_main_loop_quit(event_loop);
@@ -716,35 +651,31 @@ error:
 
 void fwdPressed ()
 {
-        printf("FWD press\n");
-        characteristics_write_reqInstant(0x12, "20");
-        characteristics_write_reqInstant(0x14, "20");
+        uint16_t val = 0x2020;
+        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void backPressed ()
 {
-        printf("BACK press\n");
-        characteristics_write_reqInstant(0x12, "-20");
-        characteristics_write_reqInstant(0x14, "-20");
+        uint16_t val = 0xe0e0;
+        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void leftPressed ()
 {
-        printf("LEFT press\n");
-        characteristics_write_reqInstant(0x12, "-10");
-        characteristics_write_reqInstant(0x14, "10");
+        uint16_t val = 0x20e0;
+        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void rightPressed ()
 {
-        printf("RIGHT press\n");
-        characteristics_write_reqInstant(0x12, "10");
-        characteristics_write_reqInstant(0x14, "-10");
+        uint16_t val = 0xe020;
+        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void buttonReleased ()
 {
-        printf("button release\n");
-        characteristics_write_reqInstant(0x12, "00");
-        characteristics_write_reqInstant(0x14, "00");
+//        printf("button release\n");
+        uint16_t val = 0x0000;
+        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
