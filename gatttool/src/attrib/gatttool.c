@@ -704,10 +704,11 @@ void buttonReleased ()
         characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
+
+
 void ledToggled (GtkToggleButton *togglebutton, gpointer user_data)
 {
         static uint8_t val = 0x00;
-        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 
         if (togglebutton == neLight) {
 #ifdef PRINT_HANDLERS
@@ -715,34 +716,43 @@ void ledToggled (GtkToggleButton *togglebutton, gpointer user_data)
                 fflush(stdout);
 #endif
                 if (gtk_toggle_button_get_active (neLight)) {
-//                        val |= 0x01;
-                        val = 0x01;
+                        val |= 0x01;
                 }
                 else {
-//                        val &= ~0x01;
-                        val = 0x00;
+                        val &= ~0x01;
                 }
-
-                characteristics_write_reqInstant(0x14, &val, 1);
         }
         else if (togglebutton == nwLight) {
 #ifdef PRINT_HANDLERS
                 printf("nwLight\n");
                 fflush(stdout);
 #endif
-                val = 0x00;
-                characteristics_write_reqInstant(0x14, &val, 1);
+                if (gtk_toggle_button_get_active (nwLight)) {
+                        val |= 0x02;
+                }
+                else {
+                        val &= ~0x02;
+                }
         }
         else if (togglebutton == seLight) {
-                val ^= 0x04;
-                characteristics_write_reqInstant(0x14, &val, 1);
+                if (gtk_toggle_button_get_active (seLight)) {
+                        val |= 0x04;
+                }
+                else {
+                        val &= ~0x04;
+                }
         }
         else  {
-                val ^= 0x08;
-                characteristics_write_reqInstant(0x14, &val, 1);
+                if (gtk_toggle_button_get_active (swLight)) {
+                        val |= 0x08;
+                }
+                else {
+                        val &= ~0x08;
+                }
         }
 
 
 
+        characteristics_write_reqInstant(0x14, &val, 1);
 
 }
