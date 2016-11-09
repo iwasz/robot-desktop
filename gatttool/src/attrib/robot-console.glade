@@ -38,7 +38,9 @@
             <property name="column_homogeneous">True</property>
             <child>
               <object class="GtkButton" id="fwdButton">
-                <property name="label" translatable="yes">fwd</property>
+                <property name="label" translatable="yes">↑</property>
+                <property name="width_request">100</property>
+                <property name="height_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -53,7 +55,7 @@
             </child>
             <child>
               <object class="GtkButton" id="leftButton">
-                <property name="label" translatable="yes">left</property>
+                <property name="label" translatable="yes">←</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -68,7 +70,7 @@
             </child>
             <child>
               <object class="GtkButton" id="rightButton">
-                <property name="label" translatable="yes">right</property>
+                <property name="label" translatable="yes">→</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -83,7 +85,7 @@
             </child>
             <child>
               <object class="GtkButton" id="backButton">
-                <property name="label" translatable="yes">back</property>
+                <property name="label" translatable="yes">↓</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -97,16 +99,68 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkCheckButton" id="swLight">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="ledToggled" swapped="no"/>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkCheckButton" id="nwLight">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="ledToggled" swapped="no"/>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkCheckButton" id="seLight">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="ledToggled" swapped="no"/>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">2</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkCheckButton" id="neLight">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="ledToggled" swapped="no"/>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -117,6 +171,9 @@
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

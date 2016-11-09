@@ -530,6 +530,7 @@ static GOptionEntry options[] = {
         { NULL },
 };
 
+GtkToggleButton *nwLight, *neLight, *swLight, *seLight;
 
 int main(int argc, char *argv[])
 {
@@ -589,6 +590,10 @@ int main(int argc, char *argv[])
         gtk_builder_add_from_file (builder, "../src/attrib/robot-console.glade", NULL);
 
         window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
+        nwLight = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "nwLight"));
+        neLight = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "neLight"));
+        swLight = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "swLight"));
+        seLight = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "seLight"));
         gtk_builder_connect_signals(builder, NULL);
 
         g_object_unref(builder);
@@ -647,35 +652,97 @@ error:
 
 
 
-
+//#define PRINT_HANDLERS 1
 
 void fwdPressed ()
 {
+#ifdef PRINT_HANDLERS
+                printf("fwdPressed\n");
+                fflush(stdout);
+#endif
         uint16_t val = 0x2020;
         characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void backPressed ()
 {
+#ifdef PRINT_HANDLERS
+                printf("backPressed\n");
+                fflush(stdout);
+#endif
         uint16_t val = 0xe0e0;
         characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void leftPressed ()
 {
+#ifdef PRINT_HANDLERS
+                printf("leftPressed\n");
+                fflush(stdout);
+#endif
         uint16_t val = 0x20e0;
         characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void rightPressed ()
 {
+#ifdef PRINT_HANDLERS
+                printf("rightPressed\n");
+                fflush(stdout);
+#endif
         uint16_t val = 0xe020;
         characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
 }
 
 void buttonReleased ()
 {
-//        printf("button release\n");
+#ifdef PRINT_HANDLERS
+                printf("buttonReleased\n");
+                fflush(stdout);
+#endif
         uint16_t val = 0x0000;
         characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
+}
+
+void ledToggled (GtkToggleButton *togglebutton, gpointer user_data)
+{
+        static uint8_t val = 0x00;
+        characteristics_write_reqInstant(0x12, (uint8_t *)&val, 2);
+
+        if (togglebutton == neLight) {
+#ifdef PRINT_HANDLERS
+                printf("neLight\n");
+                fflush(stdout);
+#endif
+                if (gtk_toggle_button_get_active (neLight)) {
+//                        val |= 0x01;
+                        val = 0x01;
+                }
+                else {
+//                        val &= ~0x01;
+                        val = 0x00;
+                }
+
+                characteristics_write_reqInstant(0x14, &val, 1);
+        }
+        else if (togglebutton == nwLight) {
+#ifdef PRINT_HANDLERS
+                printf("nwLight\n");
+                fflush(stdout);
+#endif
+                val = 0x00;
+                characteristics_write_reqInstant(0x14, &val, 1);
+        }
+        else if (togglebutton == seLight) {
+                val ^= 0x04;
+                characteristics_write_reqInstant(0x14, &val, 1);
+        }
+        else  {
+                val ^= 0x08;
+                characteristics_write_reqInstant(0x14, &val, 1);
+        }
+
+
+
+
 }
