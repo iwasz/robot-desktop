@@ -48,9 +48,11 @@ LIST (APPEND APP_SOURCES "src/gdbus/object.c")
 LIST (APPEND APP_SOURCES "src/gdbus/polkit.c")
 LIST (APPEND APP_SOURCES "src/gdbus/watch.c")
 LIST (APPEND APP_SOURCES "src/monitor/uuid.c")
-LIST (APPEND APP_SOURCES "src/monitor/uuid.c")
+LIST (APPEND APP_SOURCES "src/monitor/uuid.h")
 LIST (APPEND APP_SOURCES "src/shared/util.c")
-LIST (APPEND APP_SOURCES "src/shared/util.c")
+LIST (APPEND APP_SOURCES "src/shared/util.h")
+LIST (APPEND APP_SOURCES "src/shared/io.h")
+LIST (APPEND APP_SOURCES "src/shared/io-glib.c")
 
 
 add_executable (${PROJECT_NAME} ${APP_SOURCES})
